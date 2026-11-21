@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
+import CurrencySelect from './components/CurrencySelect.vue'
 
 const fromCurrency = ref('USD')
 const sendAmount = ref('1000')
@@ -42,7 +43,11 @@ const getFlagUrl = (imageCode: string) => {
       <section aria-labelledby="converter-heading">
         <h2 id="converter-heading" class="font-semibold text-neutral-50 text-xl">CHECK THE RATE</h2>
 
-        <form action="/converter" method="post" class="bg-neutral-500 p-4 rounded-2xl flex flex-col gap-4">
+        <form
+          action="/converter"
+          method="post"
+          class="bg-neutral-500 p-4 rounded-2xl flex flex-col gap-4"
+        >
           <div class="bg-neutral-400 p-4 rounded-2xl">
             <p class="text-neutral-100">SEND</p>
             <div class="flex justify-between">
@@ -52,35 +57,9 @@ const getFlagUrl = (imageCode: string) => {
                 class="text-neutral-50"
                 placeholder="1000"
               />
-              <Listbox as="div" v-model="fromCurrency" class="bg-neutral-300 p-2.5 rounded-2xl">
-                <div class="flex items-center gap-2">
-                  <img
-                    :src="getFlagUrl(selectedFromCurrency?.imageCode || '')"
-                    :alt="selectedFromCurrency?.name"
-                    class="w-5 h-5 rounded-2xl"
-                  />
-                  <ListboxButton class="text-neutral-50">{{ fromCurrency }}</ListboxButton>
-                  <img
-                    src="`@/assets/images/icon-chevron-down.svg`"
-                    alt="US Flag"
-                    class="w-5 h-5 rounded-full"
-                  />
-                </div>
-                <ListboxOptions class="">
-                  <ListboxOption
-                    class="text-neutral-50"
-                    v-for="currency in currencies"
-                    :key="currency.code"
-                    :value="currency.code"
-                  >
-                    <img
-                      :src="getFlagUrl(currency.imageCode)"
-                      :alt="`${currency.name} Flag`"
-                      class="w-5 h-5 rounded-full"
-                    />{{ currency.code }}
-                  </ListboxOption>
-                </ListboxOptions>
-              </Listbox>
+
+              <!-- // props: currency -->
+              <CurrencySelect v-model="fromCurrency" :currencies="currencies" />       
             </div>
           </div>
 
@@ -93,39 +72,9 @@ const getFlagUrl = (imageCode: string) => {
                 class="text-neutral-50"
                 placeholder="1000"
               />
-              <Listbox as="div" v-model="toCurrency" class="bg-neutral-300 p-2.5 rounded-2xl">
-                <div class="flex items-center gap-2">
-                  <img
-                    :src="getFlagUrl(selectedToCurrency?.imageCode || '')"
-                    :alt="selectedToCurrency?.name"
-                    class="w-5 h-5 rounded-2xl"
-                  />
-                  <ListboxButton class="text-neutral-50">{{ toCurrency }}</ListboxButton>
-                  <img
-                    src="`@/assets/images/icon-chevron-down.svg`"
-                    alt="US Flag"
-                    class="w-5 h-5 rounded-full"
-                  />
-                </div>
-                <ListboxOptions class="">
-                  <ListboxOption
-                    class="text-neutral-50"
-                    v-for="currency in currencies"
-                    :key="currency.code"
-                    :value="currency.code"
-                  >
-                    <img
-                      :src="getFlagUrl(currency.imageCode)"
-                      :alt="`${currency.name} Flag`"
-                      class="w-5 h-5 rounded-full"
-                    />{{ currency.code }}
-                  </ListboxOption>
-                </ListboxOptions>
-              </Listbox>
+              <CurrencySelect v-model="toCurrency" :currencies="currencies" />
             </div>
           </div>
-
-          
         </form>
       </section>
 
