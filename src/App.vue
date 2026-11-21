@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import CurrencyInput from './components/CurrencyInput.vue'
 import CurrencySelect from './components/CurrencySelect.vue'
 
@@ -7,6 +7,52 @@ const fromCurrency = ref('USD')
 const sendAmount = ref('1000')
 const toCurrency = ref('EUR')
 const receiveAmount = ref('900')
+
+const currentRate = ref(1)
+const isLoading = ref(false)
+
+const getRates = async (base: string, target: string) => {
+  if (base === target) {
+    currentRate.value = 1
+    return
+  }
+
+  try {
+    isLoading.value = false
+    const res = await fetch(`https://api.frankfurter.dev/v2/rate/${base}/${target}`)
+    if (!res.ok) throw new Error('Failed to fetch rates')
+    const data = await res.json()
+    currentRate.value = data.rate
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isLoading.value = true
+  }
+}
+
+const calculatedReceive = computed(() => {
+  const amount = parseFloat(sendAmount.value) || 0
+  return (amount * currentRate.value).toFixed(2)
+})
+
+const updateConversion = () => {
+  const amount = parseFloat(sendAmount.value) || 0
+  receiveAmount.value = (amount * currentRate.value).toFixed(2)
+}
+
+watch([fromCurrency, toCurrency], async ([newBase, newTarget]) => {
+  await getRates(newBase, newTarget)
+  updateConversion()
+})
+
+watch(sendAmount, () => {
+  updateConversion()
+})
+
+onMounted(async () => {
+  await getRates(fromCurrency.value, toCurrency.value)
+  updateConversion()
+})
 
 const currencies = [
   { code: 'EUR', name: 'Euro', imageCode: 'eu' },
@@ -63,7 +109,7 @@ const swapCurrencies = () => {
             >
               <p class="text-neutral-100">RECEIVE</p>
               <div class="flex justify-between">
-                <CurrencyInput v-model="receiveAmount" class="text-lime-500" />
+                <CurrencyInput v-model="receiveAmount" class="text-lime-500" readonly />
                 <CurrencySelect v-model="toCurrency" :currencies="currencies" />
               </div>
             </div>
@@ -83,11 +129,24 @@ const swapCurrencies = () => {
           </svg>
 
           <div>
-            <p class="text-center text-neutral-50 text-[10px]">1 USD = 0.8530 EUR</p>
+            <p class="text-center text-neutral-50 text-[10px]">1 {{ fromCurrency }} = {{ currentRate.toFixed(4) }} {{ toCurrency }}</p>
             <div class="flex items-center justify-center gap-2 mt-4">
-              <button type="button" class="bg-lime-500 py-2 px-3 rounded-xl flex items-center gap-2">
-                <img src="@/assets/images/icon-star-black.svg" alt="Add to favorites" class="w-4 h-4">FAVORITED</button>
-              <button type="button" class="border border-lime-500 text-neutral-50 py-2 px-3 rounded-xl">LOG CONVERSION</button>
+              <button
+                type="button"
+                class="bg-lime-500 py-2 px-3 rounded-xl flex items-center gap-2"
+              >
+                <img
+                  src="@/assets/images/icon-star-black.svg"
+                  alt="Add to favorites"
+                  class="w-4 h-4"
+                />FAVORITED
+              </button>
+              <button
+                type="button"
+                class="border border-lime-500 text-neutral-50 py-2 px-3 rounded-xl"
+              >
+                LOG CONVERSION
+              </button>
             </div>
           </div>
         </form>

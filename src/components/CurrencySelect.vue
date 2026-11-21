@@ -14,7 +14,11 @@ const getFlagUrl = (imageCode: string) => {
 </script>
 
 <template>
-  <Listbox as="div" v-model="model" class="bg-neutral-500 border border-neutral-400 p-2.5 rounded-xl relative shrink-0">
+  <Listbox
+    as="div"
+    v-model="model"
+    class="bg-neutral-500 border border-neutral-400 p-2.5 rounded-xl relative shrink-0"
+  >
     <div class="flex items-center gap-2">
       <ListboxButton class="text-neutral-50 flex items-center gap-2">
         <img
