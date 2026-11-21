@@ -14,13 +14,13 @@ const getFlagUrl = (imageCode: string) => {
 </script>
 
 <template>
-  <Listbox as="div" v-model="model" class="bg-neutral-300 p-2.5 rounded-2xl relative">
+  <Listbox as="div" v-model="model" class="bg-neutral-500 border border-neutral-400 p-2.5 rounded-xl relative shrink-0">
     <div class="flex items-center gap-2">
       <ListboxButton class="text-neutral-50 flex items-center gap-2">
         <img
           :src="getFlagUrl(selectedCurrency?.imageCode || '')"
           :alt="selectedCurrency?.name"
-          class="w-5 h-5 rounded-2xl"
+          class="w-5 h-5 rounded-xl"
         />{{ modelValue
         }}<img
           src="`@/assets/images/icon-chevron-down.svg`"
@@ -30,7 +30,7 @@ const getFlagUrl = (imageCode: string) => {
       </ListboxButton>
     </div>
     <ListboxOptions
-      class="p-2.5 -mt-2 absolute top-full left-0 right-0 z-10 h-32 overflow-y-auto bg-neutral-300 rounded-b-2xl"
+      class="p-2.5 -mt-2 absolute top-full left-0 right-0 z-10 h-32 overflow-y-auto bg-neutral-500 border border-neutral-400 border-t-0 rounded-b-xl"
     >
       <ListboxOption
         class="text-neutral-50 flex items-center gap-2 py-1"

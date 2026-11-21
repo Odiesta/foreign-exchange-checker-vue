@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
 @import 'tailwindcss';
 
 @theme {
@@ -14,4 +16,6 @@
   --color-lime-800: #283300;
   --color-green-500: #42eb05;
   --color-red-500: #ff4141;
+
+  --font-mono: 'JetBrains Mono', monospace;
 }
